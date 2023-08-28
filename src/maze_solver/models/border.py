@@ -47,6 +47,18 @@ class Border(IntFlag):
         It can be an EMPTY, TOP, BOTTOM, LEFT, or RIGHT.
         Extends IntFlag class from enum module, it can use bitwise operations.
 
+    Attributes:
+        EMPTY = 0
+            Represents no border.
+        TOP = auto()
+            Represents top border.
+        BOTTOM = auto()
+            Represents bottom border.
+        LEFT = auto()
+            Represents left border.
+        RIGHT = auto()
+            Represents right border.
+
     Methods:
         corner(self) -> bool:
             Getter method to verify if it has a corner border.

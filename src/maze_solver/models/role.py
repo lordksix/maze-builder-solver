@@ -27,6 +27,22 @@ class Role(IntEnum):
         It can be an NONE, ENEMY, ENTRANCE, EXIT, EXTERIOR, REWARD, or WALL.
         Extends StrEnum class from enum module.
 
+    Attributes:
+        NONE = 0
+            Represents no role.
+        ENEMY = auto()
+            Represents enemy role.
+        ENTRANCE = auto()
+            Represents entrance role.
+        EXIT = auto()
+            Represents exit role.
+        EXTERIOR = auto()
+            Represents exterior role.
+        REWARD = auto()
+            Represents reward role.
+        WALL = auto()
+            Represents wall role.
+
     Returns:
         (Role): It can be an NONE, ENEMY, ENTRANCE, EXIT, EXTERIOR, REWARD, or
             WALL.
