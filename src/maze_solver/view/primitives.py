@@ -65,7 +65,14 @@ class Primitive(Protocol):
         Returns:
             str: _description_
         """
-        ...
+        return ""
+
+    def placeholder(self, **attributes) -> None:
+        """A method to represent the geometric primitive.
+
+        Returns:
+            str: _description_
+        """
 
 
 class Point(NamedTuple):
@@ -88,7 +95,7 @@ class Point(NamedTuple):
     x: int
     y: int
 
-    def draw(self, **attributes) -> str:
+    def draw(self) -> str:
         """A method to represent a SVG point.
 
         Returns:
@@ -96,7 +103,7 @@ class Point(NamedTuple):
         """
         return f"{self.x},{self.y}"
 
-    def translate(self, x=0, y=0) -> "Point":
+    def translate(self, x_pos=0, y_pos=0) -> "Point":
         """A method to create a point the translated position.
 
         Args:
@@ -106,7 +113,7 @@ class Point(NamedTuple):
         Returns:
             Point: A point on the new X, Y position
         """
-        return Point(self.x + x, self.y + y)
+        return Point(self.x + x_pos, self.y + y_pos)
 
 
 class Line(NamedTuple):
@@ -266,13 +273,20 @@ class NullPrimitive:
             A method to represent the null primitive.
     """
 
-    def draw(self, **attributes) -> str:
+    def draw(self) -> str:
         """A method to represent the null primitive.
 
         Returns:
             str: A SVG text.
         """
         return ""
+
+    def placeholder2(self) -> None:
+        """A method to represent the null primitive.
+
+        Returns:
+            str: A SVG text.
+        """
 
 
 def tag(name: str, value: str | None = None, **attributes) -> str:
