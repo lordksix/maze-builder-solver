@@ -267,6 +267,11 @@ class NullPrimitive:
     """
 
     def draw(self, **attributes) -> str:
+        """A method to represent the null primitive.
+
+        Returns:
+            str: A SVG text.
+        """
         return ""
 
 
