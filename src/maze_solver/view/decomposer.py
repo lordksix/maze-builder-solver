@@ -18,6 +18,8 @@ from maze_solver.view.primitives import (
 )
 
 
+# pylint: disable=too-many-return-statements
+# pylint: disable=too-many-branches
 def decompose(border: Border, top_left: Point, sq_size: int) -> Primitive:
     """A function that returns a geometric primitive that represents
     the border of the square in SVG.

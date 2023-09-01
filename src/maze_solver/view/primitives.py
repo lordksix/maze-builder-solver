@@ -304,7 +304,9 @@ class Text:
         Returns:
             str: A SVG text.
         """
-        return tag("text", self.content, x=self.point.x, y=self.point.y, **attributes)
+        return tag(
+            "text", self.content, x=self.point.x, y=self.point.y, **attributes
+        )  # Return tag
 
     def placeholder(self, **attributes) -> None:
         """A method to represent the geometric primitive.
@@ -322,6 +324,7 @@ class NullPrimitive:
             A method to represent the null primitive.
     """
 
+    # pylint: disable=unused-argument
     def draw(self, **attributes) -> str:
         """A method to represent the null primitive.
 
