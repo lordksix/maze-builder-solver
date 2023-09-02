@@ -115,6 +115,13 @@ class Point(NamedTuple):
         """
         return Point(self.x + x_pos, self.y + y_pos)
 
+    def placeholder(self, **attributes) -> None:
+        """A method to represent the geometric primitive.
+
+        Returns:
+            str: _description_
+        """
+
 
 class Line(NamedTuple):
     """A class that represents a line primitive in a XY Euclidean Line.
@@ -149,6 +156,13 @@ class Line(NamedTuple):
             **attributes,
         )
 
+    def placeholder(self, **attributes) -> None:
+        """A method to represent the geometric primitive.
+
+        Returns:
+            str: _description_
+        """
+
 
 class Polyline(tuple[Point, ...]):
     """A class that represents a polyline primitive in a XY Euclidean Line.
@@ -171,6 +185,13 @@ class Polyline(tuple[Point, ...]):
         """
         points = " ".join(point.draw() for point in self)
         return tag("polyline", points=points, **attributes)
+
+    def placeholder(self, **attributes) -> None:
+        """A method to represent the geometric primitive.
+
+        Returns:
+            str: _description_
+        """
 
 
 class Polygon(tuple[Point, ...]):
@@ -195,6 +216,13 @@ class Polygon(tuple[Point, ...]):
         points = " ".join(point.draw() for point in self)
         return tag("polygon", points=points, **attributes)
 
+    def placeholder(self, **attributes) -> None:
+        """A method to represent the geometric primitive.
+
+        Returns:
+            str: _description_
+        """
+
 
 class DisjointLines(tuple[Line, ...]):
     """A class that represents a DisjointLines primitive in a XY Line.
@@ -215,6 +243,13 @@ class DisjointLines(tuple[Line, ...]):
             str: A string of all lines together
         """
         return "".join(line.draw(**attributes) for line in self)
+
+    def placeholder(self, **attributes) -> None:
+        """A method to represent the geometric primitive.
+
+        Returns:
+            str: _description_
+        """
 
 
 @dataclass(frozen=True)
@@ -240,6 +275,13 @@ class Rect:
             attrs = attributes
         return tag("rect", **attrs)
 
+    def placeholder(self, **attributes) -> None:
+        """A method to represent the geometric primitive.
+
+        Returns:
+            str: _description_
+        """
+
 
 @dataclass(frozen=True)
 class Text:
@@ -262,7 +304,16 @@ class Text:
         Returns:
             str: A SVG text.
         """
-        return tag("text", self.content, x=self.point.x, y=self.point.y, **attributes)
+        return tag(
+            "text", self.content, x=self.point.x, y=self.point.y, **attributes
+        )  # Return tag
+
+    def placeholder(self, **attributes) -> None:
+        """A method to represent the geometric primitive.
+
+        Returns:
+            str: _description_
+        """
 
 
 class NullPrimitive:
@@ -273,7 +324,8 @@ class NullPrimitive:
             A method to represent the null primitive.
     """
 
-    def draw(self) -> str:
+    # pylint: disable=unused-argument
+    def draw(self, **attributes) -> str:
         """A method to represent the null primitive.
 
         Returns:
@@ -281,11 +333,11 @@ class NullPrimitive:
         """
         return ""
 
-    def placeholder2(self) -> None:
-        """A method to represent the null primitive.
+    def placeholder(self, **attributes) -> None:
+        """A method to represent the geometric primitive.
 
         Returns:
-            str: A SVG text.
+            str: _description_
         """
 
 
