@@ -4,10 +4,13 @@ This module allows to create and manage the maze.
 
 Examples:
 
-    >>> from maze_solver.models.border import Border
+    >>> from pathlib import Path
     >>> from maze_solver.models.maze import Maze
+    >>> from maze_solver.models.border import Border
     >>> from maze_solver.models.role import Role
     >>> from maze_solver.models.square import Square
+    >>> from maze_solver.persistence.serializer import dump
+
     >>> maze = Maze(
     ...     squares=(
     ...         Square(0, 0, 0, Border.TOP | Border.LEFT),
@@ -25,6 +28,38 @@ Examples:
     ...     )
     ... )
 
+    >>> maze.dump("miniature.maze")
+    >>> path = Path("miniature.maze")
+    >>> Maze.load(path) == maze
+    True
+
+    >>> Maze.load(path) is maze
+    False
+
+    >>> maze = Maze.load(path)
+
+    >>> maze.width, maze.height
+    (4, 3)
+
+    >>> len(maze.squares)
+    12
+
+    >>> maze.entrance
+    Square(index=8,
+        row=2,
+        column=0,
+        border=<Border.TOP|LEFT: 5>,
+        role=<Role.ENTRANCE: 2>)
+
+    >>> maze.exit
+    Square(index=2,
+        row=0,
+        column=2,
+        border=<Border.LEFT|RIGHT: 12>,
+        role=<Role.EXIT: 3>)
+
+
+
 The module contains the following class:
 - `Maze`: A class that handles the maze.
 
@@ -37,10 +72,12 @@ The module contains the following functions:
 
 from dataclasses import dataclass
 from functools import cached_property
+from pathlib import Path
 from typing import Iterator
 
 from maze_solver.models.role import Role
 from maze_solver.models.square import Square
+from maze_solver.persistence.serializer import dump_squares, load_squares
 
 
 @dataclass(frozen=True)
@@ -60,6 +97,10 @@ class Maze:
             A cached getter method to get the square with ENTRANCE role.
         exit(self) -> Square:
             A cached getter method to get the square with EXIT role.
+        load(cls, path: Path) -> "Maze":
+            A class method to load a maze file.
+        dump(self, path: Path) -> None:
+            A method that writes a file in the path given.
 
     Returns:
         (Maze): Composed of a tuple of squares.
@@ -76,6 +117,18 @@ class Maze:
 
     def __getitem__(self, index: int) -> Square:
         return self.squares[index]
+
+    @classmethod
+    def load(cls, path: Path) -> "Maze":
+        """A class method to load a maze file.
+
+        Args:
+            path (Path): Path to file to be loaded
+
+        Returns:
+            Maze: Object that represents the object
+        """
+        return Maze(tuple(load_squares(path)))
 
     @cached_property
     def width(self):
@@ -112,6 +165,14 @@ class Maze:
             Square: The square with EXIT role.
         """
         return next(sq for sq in self if sq.role is Role.EXIT)
+
+    def dump(self, path: Path) -> None:
+        """A method that writes a file in the path given.
+
+        Args:
+            path (Path): A path where the file will be located.
+        """
+        dump_squares(self.width, self.height, self.squares, path)
 
 
 def validate_indices(maze: Maze) -> None:
