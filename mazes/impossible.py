@@ -1,5 +1,6 @@
 # fmt: off
 # flake8: noqa
+# pylint: disable-all
 from pathlib import Path
 
 from maze_solver.models.border import Border

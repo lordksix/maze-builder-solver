@@ -1,3 +1,4 @@
+# pylint: disable-all
 import sys
 from pathlib import Path
 
