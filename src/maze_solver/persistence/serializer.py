@@ -5,9 +5,8 @@ This module allows the serialization of maze file.
 Examples:
 
     >>> from pathlib import Path
-
-    >>> from maze_solver.models.border import Border
     >>> from maze_solver.models.maze import Maze
+    >>> from maze_solver.models.border import Border
     >>> from maze_solver.models.role import Role
     >>> from maze_solver.models.square import Square
     >>> from maze_solver.persistence.serializer import dump
@@ -29,29 +28,53 @@ Examples:
     ...     )
     ... )
 
-    >>> dump(maze, Path("miniature.maze"))
-    >>> load(path) == maze
+    >>> maze.dump("miniature.maze")
+    >>> path = Path("miniature.maze")
+    >>> Maze.load(path) == maze
     True
 
-    >>> load(path) is maze
+    >>> Maze.load(path) is maze
     False
 
+    >>> maze = Maze.load(path)
+
+    >>> maze.width, maze.height
+    (4, 3)
+
+    >>> len(maze.squares)
+    12
+
+    >>> maze.entrance
+    Square(index=8,
+        row=2,
+        column=0,
+        border=<Border.TOP|LEFT: 5>,
+        role=<Role.ENTRANCE: 2>)
+
+    >>> maze.exit
+    Square(index=2,
+        row=0,
+        column=2,
+        border=<Border.LEFT|RIGHT: 12>,
+        role=<Role.EXIT: 3>)
+
 The module contains the following functions:
-- `dump`: Produces the maze file.
+- `dump_squares`: Produces the maze file.
 - `serialize`: Produces a tuple consisting of the file header and body.
 - `compress`: Compresses two values (square roles and square border
     value) into a single number.
-- `load`: Open the file for reading in binary mode to option the file
-    header, obtain its file version and obtain its body.
-- `deserialize`: Process the file header and body to create a maze object.
+- `load_squares`: Open the file for reading in binary mode to option the file
+    header, obtain its file version and obtain iteration of squares.
+- `deserialize`: Process the file header and body to create a iteration of
+    squares.
 - `decompress`: Decompress a single number to two values (square roles and
     square border value).
 """
 import array
 import pathlib
+from typing import Iterator
 
 from maze_solver.models.border import Border
-from maze_solver.models.maze import Maze
 from maze_solver.models.role import Role
 from maze_solver.models.square import Square
 from maze_solver.persistence.file_format import FileBody, FileHeader
@@ -59,22 +82,25 @@ from maze_solver.persistence.file_format import FileBody, FileHeader
 FORMAT_VERSION: int = 1
 
 
-def dump(maze: Maze, path: pathlib.Path) -> None:
+def dump_squares(
+    width: int, height: int, squares: tuple[Square, ...], path: pathlib.Path
+) -> None:
     """Produces the maze file.
 
     Args:
         maze (Maze): Object that represents the maze.
         path (pathlib.Path): Path where to write the maze file.
     """
-    header, body = serialize(maze)
+    header, body = serialize(width, height, squares)
     with path.open(mode="wb") as file:
         header.write(file)
         body.write(file)
 
 
-def load(path: pathlib.Path) -> Maze:
+def load_squares(path: pathlib.Path) -> Iterator[Square]:
     """Open the file for reading in binary mode to option the file header
-    obtain its file version and obtain its body. and returns a maze.
+    obtain its file version and obtain its body and returns a iteration of
+    squares.
 
     Args:
         path (pathlib.Path): Location of the file to be opened.
@@ -93,7 +119,9 @@ def load(path: pathlib.Path) -> Maze:
         return deserialize(header, body)
 
 
-def serialize(maze: Maze) -> tuple[FileHeader, FileBody]:
+def serialize(
+    width: int, height: int, squares: tuple[Square, ...]
+) -> tuple[FileHeader, FileBody]:
     """Produces a tuple consisting of the file header and body.
 
     Args:
@@ -103,13 +131,13 @@ def serialize(maze: Maze) -> tuple[FileHeader, FileBody]:
         tuple[FileHeader, FileBody]: Tuple consisting of the file header and
         the file body.
     """
-    header = FileHeader(FORMAT_VERSION, maze.width, maze.height)
-    body = FileBody(array.array("B", map(compress, maze)))
+    header = FileHeader(FORMAT_VERSION, width, height)
+    body = FileBody(array.array("B", map(compress, squares)))
     return header, body
 
 
-def deserialize(header: FileHeader, body: FileBody) -> Maze:
-    """Process the file header and body to create a maze object.
+def deserialize(header: FileHeader, body: FileBody) -> Iterator[Square]:
+    """Process the file header and body to create a iteration of squares.
 
     Args:
         header (FileHeader): Represents the file header of the maze.
@@ -118,12 +146,10 @@ def deserialize(header: FileHeader, body: FileBody) -> Maze:
     Returns:
         Maze: Represents the maze as an object
     """
-    squares: list[Square] = []
     for index, square_value in enumerate(body.square_values):
         row, column = divmod(index, header.width)
         border, role = decompress(square_value)
-        squares.append(Square(index, row, column, border, role))
-    return Maze(tuple(squares))
+        yield Square(index, row, column, border, role)
 
 
 def compress(square: Square) -> int:
