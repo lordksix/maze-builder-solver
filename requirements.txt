@@ -1,0 +1,2 @@
+-e git+https://github.com/lordksix/maze-builder-solver.git@c2790d18090387443a4e71f3ca302adbff5070b6#egg=maze_builder_solver
+networkx==3.1

@@ -5,3 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "maze-builder-solver"
 version = "1.0.0"
+
+dependencies = [
+    "networkx >= 3.0",
+]
