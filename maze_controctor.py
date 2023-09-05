@@ -1,6 +1,7 @@
 # pylint: disable-all
 from pathlib import Path
 
+from maze_solver.graphs.solver import solve_all
 from maze_solver.models.border import Border
 from maze_solver.models.maze import Maze
 from maze_solver.models.role import Role
@@ -34,6 +35,14 @@ print(Maze.load(path) is maze)
 
 print(len(maze.squares), maze.height, maze.width)
 SVGRenderer().render(maze).preview()
-maze = Maze.load(Path("mazes") / "labyrinth.maze")
+maze = Maze.load(Path("mazes") / "pacman.maze")
 print(len(maze.squares), maze.height, maze.width)
 SVGRenderer().render(maze).preview()
+solution_maze = solve_all(maze)
+if solution_maze:
+    for solution in solution_maze:
+        print(len(solution_maze))
+        [square.index for square in solution]
+        SVGRenderer().render(maze, solution).preview()
+else:
+    print("no solution")
