@@ -1,5 +1,4 @@
-"""Provide the classes and functions that handles the creation of xml tags for
-rendering.
+"""Provide the classes and functions that handles geometric primitives.
 
 This module allows the creation of xml tags for rendering.
 

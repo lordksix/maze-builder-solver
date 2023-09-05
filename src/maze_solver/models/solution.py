@@ -1,6 +1,6 @@
-"""Provide the classes that handles the maze.
+"""Provide the classes that handles the solution of the maze.
 
-This module allows to create and manage the maze.
+This module allows to create and manage the solution of the maze.
 
 The module contains the following class:
 - `Solution`: A class that handles the maze.

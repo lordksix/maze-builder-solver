@@ -9,3 +9,6 @@ version = "1.0.0"
 dependencies = [
     "networkx >= 3.0",
 ]
+
+[project.scripts]
+solve = "maze_solver.__main__:main"
